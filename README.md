@@ -1,6 +1,4 @@
-import os
-
-readme_content = """# FerSales
+# FerSales
 
 A lightweight, high-contrast, offline-first Point of Sale (POS) and sales tracking mobile application designed specifically for micro-businesses and local retail shops. Built with **React Native** and **Expo**, FerSales operates completely locally on the device using **SQLite**—ensuring lightning-fast performance without requiring an active internet connection.
 
