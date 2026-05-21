@@ -1,24 +1,24 @@
 import os
 
-readme_content = """# FerSales 🚀
+readme_content = """# FerSales
 
 A lightweight, high-contrast, offline-first Point of Sale (POS) and sales tracking mobile application designed specifically for micro-businesses and local retail shops. Built with **React Native** and **Expo**, FerSales operates completely locally on the device using **SQLite**—ensuring lightning-fast performance without requiring an active internet connection.
 
-## 📱 Project Overview
+## Project Overview
 
 FerSales simplifies order entry, customer management, and sales tracking for small shop owners. The user interface focuses heavily on accessibility and speed—utilizing a **"Big Button" UX** methodology to accommodate fast-paced environments like busy kitchens, food stalls, or retail desks.
 
 ### Key Features
 
-- **📦 Product Ledger Management:** Add, update, and categorize items (e.g., Milk Tea, Eggs, Meals) with customizable pricing tiers.
-- **🛒 High-Speed Order Checkout:** Tap-to-add product grids featuring simple `+` and `-` quantity selectors, eliminating the need for manual numeric input.
-- **👤 Local Customer Directory:** Maintain customer delivery profiles with integrated addresses and phone records.
-- **📊 Offline Sales Tracking:** Keep an instant rolling tally of daily, weekly, and historic revenue streams entirely on-device.
-- **💾 100% Offline-First Architecture:** Powered by local relational database structures to prevent transaction loss during network drops.
+- ** Product Ledger Management:** Add, update, and categorize items (e.g., Milk Tea, Eggs, Meals) with customizable pricing tiers.
+- ** High-Speed Order Checkout:** Tap-to-add product grids featuring simple `+` and `-` quantity selectors, eliminating the need for manual numeric input.
+- ** Local Customer Directory:** Maintain customer delivery profiles with integrated addresses and phone records.
+- ** Offline Sales Tracking:** Keep an instant rolling tally of daily, weekly, and historic revenue streams entirely on-device.
+- ** 100% Offline-First Architecture:** Powered by local relational database structures to prevent transaction loss during network drops.
 
 ---
 
-## 🛠️ Tech Stack & Architecture
+## Tech Stack & Architecture
 
 - **Framework:** React Native (Expo Workflow SDK 54)
 - **Language:** JavaScript / TypeScript
