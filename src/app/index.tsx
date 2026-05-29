@@ -12,6 +12,7 @@ export default function Dashboard() {
   const [totalOrders, setTotalOrders] = useState(0);
   const [recentOrders, setRecentOrders] = useState([]);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [timeFilter, setTimeFilter] = useState<'today' | 'week' | 'month' | 'year'>('today');
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 60000);
@@ -22,9 +23,17 @@ export default function Dashboard() {
     try {
       const db = await getDb();
       
-      // Use sync reads — avoids NativeDatabase.prepareAsync NPE on Android
+      let dateCondition = "date(created_at) = date('now', 'localtime')";
+      if (timeFilter === 'week') {
+        dateCondition = "created_at >= datetime('now', 'localtime', '-7 days')";
+      } else if (timeFilter === 'month') {
+        dateCondition = "strftime('%Y-%m', created_at) = strftime('%Y-%m', 'now', 'localtime')";
+      } else if (timeFilter === 'year') {
+        dateCondition = "strftime('%Y', created_at) = strftime('%Y', 'now', 'localtime')";
+      }
+
       const salesQuery = db.getFirstSync<any>(
-        "SELECT SUM(total_amount) as total, COUNT(*) as count FROM orders WHERE date(created_at) = date('now', 'localtime')"
+        `SELECT SUM(total_amount) as total, COUNT(*) as count FROM orders WHERE ${dateCondition}`
       );
       setTotalSales(salesQuery?.total || 0);
       setTotalOrders(salesQuery?.count || 0);
@@ -48,7 +57,7 @@ export default function Dashboard() {
   useFocusEffect(
     useCallback(() => {
       loadDashboardData();
-    }, [])
+    }, [timeFilter])
   );
 
   return (
@@ -64,9 +73,30 @@ export default function Dashboard() {
           </View>
         </View>
 
+        {/* Filter Tabs */}
+        <View style={styles.filterContainer}>
+          {['today', 'week', 'month', 'year'].map((filter) => (
+            <TouchableOpacity 
+              key={filter} 
+              style={[styles.filterTab, timeFilter === filter && styles.activeFilterTab]}
+              onPress={() => setTimeFilter(filter as any)}
+              activeOpacity={0.8}
+            >
+              <Text style={[styles.filterText, timeFilter === filter && styles.activeFilterText]}>
+                {filter === 'today' ? 'Today' : filter === 'week' ? '7 Days' : filter}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
         {/* Metrics Card */}
         <View style={styles.metricsCard}>
-          <Text style={styles.metricsTitle}>TODAY'S TOTAL SALES</Text>
+          <Text style={styles.metricsTitle}>
+            {timeFilter === 'today' ? "TODAY'S TOTAL SALES" 
+              : timeFilter === 'week' ? "LAST 7 DAYS SALES" 
+              : timeFilter === 'month' ? "THIS MONTH'S SALES" 
+              : "THIS YEAR'S SALES"}
+          </Text>
           <Text style={styles.metricsAmount}>₱{totalSales.toLocaleString('en-US')}</Text>
           <Text style={styles.metricsSubtitle}>{totalOrders} orders completed</Text>
         </View>
@@ -92,7 +122,12 @@ export default function Dashboard() {
 
         {/* Footprint Log */}
         <View style={styles.logContainer}>
-          <Text style={styles.logTitle}>Recent Orders</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: theme.spacing.md }}>
+            <Text style={[styles.logTitle, { marginBottom: 0 }]}>Recent Orders</Text>
+            <TouchableOpacity onPress={() => router.push({ pathname: '/transactions', params: { filter: timeFilter } })}>
+              <Text style={{ color: theme.colors.primaryOrange, fontWeight: theme.typography.fontWeight.bold, fontSize: 16 }}>View All</Text>
+            </TouchableOpacity>
+          </View>
           <FlatList
             data={recentOrders}
             keyExtractor={(item) => item.order_id.toString()}
@@ -155,7 +190,37 @@ const styles = StyleSheet.create({
     color: theme.colors.textGray,
     marginTop: theme.spacing.xs,
   },
-
+  filterContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: theme.spacing.md,
+    backgroundColor: '#F9E5D8',
+    padding: 6,
+    borderRadius: theme.borderRadius.pill,
+  },
+  filterTab: {
+    flex: 1,
+    paddingVertical: 10,
+    alignItems: 'center',
+    borderRadius: theme.borderRadius.pill,
+  },
+  activeFilterTab: {
+    backgroundColor: theme.colors.cardIvory,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  filterText: {
+    fontSize: 14,
+    fontWeight: theme.typography.fontWeight.bold,
+    color: theme.colors.textGray,
+    textTransform: 'capitalize',
+  },
+  activeFilterText: {
+    color: theme.colors.primaryOrange,
+  },
   metricsCard: {
     backgroundColor: theme.colors.primaryOrange,
     borderRadius: 30, // Large border radius matches mockup
@@ -183,13 +248,15 @@ const styles = StyleSheet.create({
     opacity: 0.9,
   },
   actionHub: {
+    flexDirection: 'row',
     gap: theme.spacing.md,
-    marginBottom: theme.spacing.xxl,
+    marginBottom: theme.spacing.xl,
   },
   actionButton: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 20,
+    paddingVertical: 18,
     borderRadius: theme.borderRadius.pill,
   },
   primaryActionButton: {
@@ -197,7 +264,7 @@ const styles = StyleSheet.create({
   },
   primaryActionButtonText: {
     color: theme.colors.cardIvory,
-    fontSize: theme.typography.fontSize.h3,
+    fontSize: 16,
     fontWeight: theme.typography.fontWeight.bold,
   },
   secondaryActionButton: {
@@ -207,7 +274,7 @@ const styles = StyleSheet.create({
   },
   secondaryActionButtonText: {
     color: theme.colors.textDark,
-    fontSize: theme.typography.fontSize.h3,
+    fontSize: 16,
     fontWeight: theme.typography.fontWeight.bold,
   },
   logContainer: {
