@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { theme } from '../constants/theme';
 import { getDb } from '../database/db';
 import { useFocusEffect } from 'expo-router';
+import { PlusIcon, GridIcon } from '../components/icons/Icons';
 
 
 export default function Dashboard() {
@@ -108,6 +109,7 @@ export default function Dashboard() {
             onPress={() => router.push('/new-order')}
             activeOpacity={0.8}
           >
+            <PlusIcon size={24} color={theme.colors.cardIvory} style={{ marginBottom: 8 }} />
             <Text style={styles.primaryActionButtonText}>New Order</Text>
           </TouchableOpacity>
 
@@ -116,7 +118,8 @@ export default function Dashboard() {
             onPress={() => router.push('/manage-products')}
             activeOpacity={0.8}
           >
-            <Text style={styles.secondaryActionButtonText}>Manage Products</Text>
+            <GridIcon size={24} color={theme.colors.textDark} style={{ marginBottom: 8 }} />
+            <Text style={styles.secondaryActionButtonText}>Inventory</Text>
           </TouchableOpacity>
         </View>
 
@@ -264,18 +267,20 @@ const styles = StyleSheet.create({
   },
   primaryActionButtonText: {
     color: theme.colors.cardIvory,
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: theme.typography.fontWeight.bold,
+    textAlign: 'center',
   },
   secondaryActionButton: {
     backgroundColor: theme.colors.cardIvory,
     borderWidth: 1,
-    borderColor: '#E2D5C8', // slightly darker pale orange/gray border
+    borderColor: '#E2D5C8',
   },
   secondaryActionButtonText: {
     color: theme.colors.textDark,
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: theme.typography.fontWeight.bold,
+    textAlign: 'center',
   },
   logContainer: {
     flex: 1,
