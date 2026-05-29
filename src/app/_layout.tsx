@@ -1,16 +1,62 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import React from 'react';
-import { useColorScheme } from 'react-native';
+import { Stack } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { getDb } from '../database/db';
+import { theme } from '../constants/theme';
+import { CartProvider } from '../context/CartContext';
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
+export default function RootLayout() {
+  const [dbInitialized, setDbInitialized] = useState(false);
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  useEffect(() => {
+    async function initDb() {
+      try {
+        await getDb();
+        setDbInitialized(true);
+      } catch (e) {
+        console.error('Failed to init DB:', e);
+      }
+    }
+    initDb();
+  }, []);
+
+  if (!dbInitialized) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>Loading Database...</Text>
+      </View>
+    );
+  }
+
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <AppTabs />
-    </ThemeProvider>
+    <CartProvider>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: {
+            backgroundColor: theme.colors.backgroundCream,
+          },
+        }}
+      >
+        <Stack.Screen name="index" />
+        <Stack.Screen name="new-order" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="delivery-details" />
+        <Stack.Screen name="order-details" options={{ presentation: 'modal' }} />
+      </Stack>
+    </CartProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: theme.colors.backgroundCream,
+  },
+  loadingText: {
+    color: theme.colors.primaryOrange,
+    fontSize: theme.typography.fontSize.h3,
+    fontWeight: theme.typography.fontWeight.bold,
+  },
+});
