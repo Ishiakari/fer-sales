@@ -88,7 +88,18 @@ export default function DeliveryDetails() {
           : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 
       const receiptItems = cartData
-        .map((item: any) => `  ${item.quantity}x ${item.name} — ₱${(item.quantity * item.price_at_sale).toFixed(2)}`)
+        .map((item: any) => {
+          let itemLine = `  ${item.quantity}x ${item.name} — ₱${(item.quantity * item.price_at_sale).toFixed(2)}`;
+          
+          if (item.selectedModifiers && item.selectedModifiers.length > 0) {
+            const modifierLines = item.selectedModifiers
+              .map((mod: any) => `     └─ + ${mod.name}${mod.extra_price > 0 ? ` (₱${mod.extra_price})` : ''}`)
+              .join('\n');
+            itemLine += `\n${modifierLines}`;
+          }
+          
+          return itemLine;
+        })
         .join('\n');
 
       const orderNumStr = String(orderId).padStart(3, '0');
