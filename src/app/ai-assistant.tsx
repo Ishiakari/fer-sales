@@ -189,26 +189,27 @@ export default function AIAssistant() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      {/* Header (fixed at top, outside KeyboardAvoidingView) */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton} activeOpacity={0.7}>
+          <BackArrowIcon color={theme.colors.textDark} />
+        </TouchableOpacity>
+        
+        <View style={styles.headerTitleContainer}>
+          <Image source={AI_AVATAR_IMAGE} style={styles.headerAvatarImage} />
+          <Text style={styles.headerTitle}>Sales Brain AI</Text>
+        </View>
+
+        <TouchableOpacity onPress={handleClearChat} style={styles.clearButton} activeOpacity={0.7}>
+          <TrashIcon size={20} color={theme.colors.textGray} />
+        </TouchableOpacity>
+      </View>
+
       <KeyboardAvoidingView 
         style={{ flex: 1 }} 
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
       >
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton} activeOpacity={0.7}>
-            <BackArrowIcon color={theme.colors.textDark} />
-          </TouchableOpacity>
-          
-          <View style={styles.headerTitleContainer}>
-            <Image source={AI_AVATAR_IMAGE} style={styles.headerAvatarImage} />
-            <Text style={styles.headerTitle}>Sales Brain AI</Text>
-          </View>
-
-          <TouchableOpacity onPress={handleClearChat} style={styles.clearButton} activeOpacity={0.7}>
-            <TrashIcon size={20} color={theme.colors.textGray} />
-          </TouchableOpacity>
-        </View>
 
         {/* Messages list */}
         <ScrollView 
