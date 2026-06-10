@@ -1,4 +1,5 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import React, { useState, useEffect, useCallback } from 'react';
 import { theme } from '../constants/theme';
@@ -72,6 +73,9 @@ export default function Dashboard() {
               {currentTime.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
             </Text>
           </View>
+          <TouchableOpacity onPress={() => router.push('/ai-assistant')} style={styles.aiButton} activeOpacity={0.8}>
+            <Text style={styles.aiButtonText}> Ask AI</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Filter Tabs */}
@@ -192,6 +196,17 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.fontSize.body,
     color: theme.colors.textGray,
     marginTop: theme.spacing.xs,
+  },
+  aiButton: {
+    backgroundColor: '#F9E5D8',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: theme.borderRadius.pill,
+  },
+  aiButtonText: {
+    color: theme.colors.primaryOrange,
+    fontWeight: theme.typography.fontWeight.bold,
+    fontSize: 14,
   },
   filterContainer: {
     flexDirection: 'row',

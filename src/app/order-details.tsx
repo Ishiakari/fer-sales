@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, TouchableOpacity, Alert, Linking } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Linking } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
 import { theme } from '../constants/theme';
